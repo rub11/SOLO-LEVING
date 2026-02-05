@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Quest Diária - Solo Leveling</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #0a0a14;
+            --bg-secondary: #121225;
+            --bg-card: #1a1a35;
+            --accent-blue: #00a8ff;
+            --accent-green: #00ff9d;
+            --accent-red: #ff4757;
+            --accent-purple: #9c88ff;
+            --text-primary: #f5f6fa;
+            --text-secondary: #a4b0be;
+            --border-radius: 8px;
+            --box-shadow: 0 0 15px rgba(0, 168, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(28, 58, 173, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(156, 136, 255, 0.1) 0%, transparent 20%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--accent-blue);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            color: var(--accent-green);
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 5px var(--accent-green));
+        }
+
+        .logo-text h1 {
+            font-size: 2rem;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 168, 255, 0.5);
+        }
+
+        .logo-text p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            background-color: var(--bg-secondary);
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--accent-blue);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+
+        .user-info h3 {
+            color: var(--accent-green);
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Modal de Cadastro */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--accent-blue);
+            box-shadow: 0 0 30px rgba(0, 168, 255, 0.5);
+            max-width: 500px;
+            width: 90%;
+            animation: modalAppear 0.5s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--accent-green);
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--accent-blue);
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .time-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .time-input-group .form-control {
+            flex: 1;
+        }
+
+        .form-control:focus {
+            outline: none;
+            box-shadow: 0 0 10px var(--accent-blue);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-green);
+            box-shadow: 0 0 15px var(--accent-green);
+        }
+
+        .btn-danger {
+            background-color: var(--accent-red);
+        }
+
+        .btn-danger:hover {
+            background-color: #ff6b81;
+            box-shadow: 0 0 15px var(--accent-red);
+        }
+
+        .btn-success {
+            background-color: var(--accent-green);
+        }
+
+        .btn-success:hover {
+            background-color: #00cc7a;
+            box-shadow: 0 0 15px var(--accent-green);
+        }
+
+        /* Timer */
+        .timer-container {
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--accent-blue);
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+        }
+
+        .timer-title {
+            color: var(--accent-green);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .timer {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 10px var(--accent-blue);
+            margin-bottom: 10px;
+        }
+
+        .timer-active {
+            color: var(--accent-green);
+        }
+
+        .timer-warning {
+            color: #ffa502;
+        }
+
+        .timer-danger {
+            color: var(--accent-red);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Quest Container */
+        .quest-container {
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid var(--accent-blue);
+            box-shadow: var(--box-shadow);
+        }
+
+        .quest-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--accent-blue);
+        }
+
+        .quest-title {
+            color: var(--accent-green);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .quest-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .quest-day {
+            display: inline-block;
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 8px 20px;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Checklist de Exercícios */
+        .checklist-container {
+            margin-bottom: 30px;
+        }
+
+        .checklist-item {
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0, 168, 255, 0.3);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            transform: translateX(5px);
+            border-color: var(--accent-blue);
+        }
+
+        .checklist-item.completed {
+            opacity: 0.8;
+            border-color: var(--accent-green);
+            background-color: rgba(0, 255, 157, 0.05);
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: var(--accent-green);
+        }
+
+        .checklist-content {
+            flex: 1;
+        }
+
+        .checklist-name {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .checklist-target {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .checklist-target span {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        /* Mensagens */
+        .message-container {
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 2px solid var(--accent-green);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+        }
+
+        .message-success {
+            border-color: var(--accent-green);
+        }
+
+        .message-fail {
+            border-color: var(--accent-red);
+        }
+
+        .message-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--accent-green);
+        }
+
+        .message-fail .message-title {
+            color: var(--accent-red);
+        }
+
+        .message-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Histórico */
+        .history-container {
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid var(--accent-blue);
+            box-shadow: var(--box-shadow);
+        }
+
+        .history-title {
+            color: var(--accent-green);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .history-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .day-card {
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .day-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+        }
+
+        .day-card.completed {
+            border-color: var(--accent-green);
+        }
+
+        .day-card.failed {
+            border-color: var(--accent-red);
+        }
+
+        .day-number {
+            font-size: 1.5rem;
+            color: var(--accent-blue);
+            margin-bottom: 5px;
+        }
+
+        .day-status {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .day-status.completed {
+            color: var(--accent-green);
+        }
+
+        .day-status.failed {
+            color: var(--accent-red);
+        }
+
+        .day-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Modal de Detalhes do Dia */
+        .day-details {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--accent-blue);
+        }
+
+        .day-details h3 {
+            color: var(--accent-green);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .day-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background-color: var(--bg-secondary);
+            padding: 10px;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            color: var(--accent-green);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Resumo Final */
+        .summary-container {
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid var(--accent-green);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+        }
+
+        .summary-title {
+            color: var(--accent-green);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-stat {
+            background-color: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            border: 1px solid var(--accent-blue);
+        }
+
+        .summary-stat .label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .summary-stat .value {
+            color: var(--accent-green);
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(0, 168, 255, 0.2);
+            margin-top: 30px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .header-controls {
+                flex-direction: column;
+            }
+            
+            .days-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .summary-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .timer {
+                font-size: 2rem;
+            }
+            
+            .history-controls {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Estados */
+        .disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .locked {
+            position: relative;
+        }
+
+        .locked::after {
+            content: "🔒";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal de Cadastro -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title"><i class="fas fa-dragon"></i> SISTEMA DE QUEST DIÁRIA</h2>
+            <p style="text-align: center; margin-bottom: 30px; color: var(--text-secondary);">Bem-vindo ao sistema de treinamento do Caçador S-Rank. Registre-se para começar sua jornada.</p>
+            
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="userName"><i class="fas fa-user"></i> Nome do Caçador</label>
+                    <input type="text" id="userName" class="form-control" placeholder="Digite seu nome" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="trainingTime"><i class="fas fa-clock"></i> Horário de Início do Treino</label>
+                    <input type="time" id="trainingTime" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="trainingDuration"><i class="fas fa-hourglass-half"></i> Duração do Treino</label>
+                    <div class="time-input-group">
+                        <input type="number" id="trainingDurationHours" class="form-control" min="0" max="5" value="1" placeholder="Horas" required>
+                        <input type="number" id="trainingDurationMinutes" class="form-control" min="0" max="59" value="0" placeholder="Minutos" required>
+                    </div>
+                    <small style="color: var(--text-secondary); display: block; margin-top: 5px;">Ex: 1h30 = 1 hora e 30 minutos</small>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-globe"></i> Fuso Horário</label>
+                    <input type="text" id="timezone" class="form-control" readonly value="Detectando...">
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">
+                    <i class="fas fa-play"></i> INICIAR JORNADA
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>SYSTEM: DAILY QUEST</h1>
+                    <p>Preparando-se para ficar forte</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <h3 id="displayUserName">Caçador</h3>
+                <p id="displayTrainingTime">Treino: --:-- - --:--</p>
+                <p id="currentDate">Data: </p>
+                <div class="header-controls">
+                    <button class="btn" onclick="showHistory()">
+                        <i class="fas fa-history"></i> Ver Dias
+                    </button>
+                    <button class="btn btn-success" onclick="showSummary()" id="summaryButton" style="display: none;">
+                        <i class="fas fa-trophy"></i> Resumo Final
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Timer -->
+        <section class="timer-container">
+            <h2 class="timer-title">TEMPO RESTANTE PARA QUEST DIÁRIA</h2>
+            <div id="timer" class="timer">--:--:--</div>
+            <p id="timerStatus">Aguardando início do treino...</p>
+        </section>
+
+        <!-- Quest Diária -->
+        <section id="questContainer" class="quest-container">
+            <div class="quest-header">
+                <h2 class="quest-title">ORIENTAÇÕES DE QUEST</h2>
+                <p class="quest-subtitle">Quest diária — Se preparando para ficar forte.</p>
+                <div class="quest-day" id="currentDay">Dia 1</div>
+            </div>
+            
+            <div class="checklist-container" id="checklistContainer">
+                <!-- Checklist será gerado dinamicamente -->
+            </div>
+            
+            <div id="messageContainer" class="message-container hidden">
+                <!-- Mensagens de sucesso/falha serão exibidas aqui -->
+            </div>
+        </section>
+
+        <!-- Histórico (inicialmente oculto) -->
+        <section id="historySection" class="history-container hidden">
+            <h2 class="history-title">HISTÓRICO DE DIAS</h2>
+            
+            <div class="history-controls">
+                <button class="btn" onclick="showCurrentDay()">
+                    <i class="fas fa-arrow-left"></i> Voltar para Hoje
+                </button>
+                <button class="btn" onclick="toggleDayDetails()" id="toggleDetailsBtn">
+                    <i class="fas fa-info-circle"></i> Mostrar Detalhes
+                </button>
+            </div>
+            
+            <div class="days-grid" id="daysGrid">
+                <!-- Dias serão gerados dinamicamente -->
+            </div>
+            
+            <div id="dayDetails" class="day-details hidden">
+                <!-- Detalhes do dia selecionado -->
+            </div>
+        </section>
+
+        <!-- Resumo Final (inicialmente oculto) -->
+        <section id="summarySection" class="summary-container hidden">
+            <h2 class="summary-title">RESULTADO FINAL — SISTEMA DE EVOLUÇÃO</h2>
+            <div class="summary-stats" id="summaryStats">
+                <!-- Estatísticas serão geradas dinamicamente -->
+            </div>
+            <div style="text-align: center;">
+                <button class="btn" onclick="showCurrentDay()">
+                    <i class="fas fa-home"></i> Voltar ao Treino
+                </button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Sistema de Quest Diária - Inspirado em Solo Leveling</p>
+            <p>Use este sistema para disciplinar seu treinamento físico diário.</p>
+            <p style="margin-top: 15px; font-size: 0.9rem;">
+                <button id="resetButton" class="btn btn-danger" style="padding: 8px 16px; font-size: 0.9rem;">
+                    <i class="fas fa-redo"></i> Reiniciar Sistema
+                </button>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Estado do sistema
+        let userData = null;
+        let currentProgress = {};
+        let isTrainingWindowActive = false;
+        let timerInterval = null;
+        let exerciseData = {};
+        let currentDay = 1;
+        let history = [];
+        let showingHistory = false;
+        let showingSummary = false;
+        let selectedDay = null;
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Detectar fuso horário
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.getElementById('timezone').value = timezone;
+            
+            // Verificar se já existe cadastro
+            checkUserRegistration();
+            
+            // Configurar horário atual no input
+            const now = new Date();
+            const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('trainingTime').value = currentTime;
+            
+            // Configurar eventos
+            document.getElementById('registrationForm').addEventListener('submit', handleRegistration);
+            document.getElementById('resetButton').addEventListener('click', resetSystem);
+            
+            // Inicializar exercícios do dia 1
+            initializeDayExercises(1);
+        });
+
+        // Verificar se o usuário já está registrado
+        function checkUserRegistration() {
+            const savedUserData = localStorage.getItem('soloLevelingUserData');
+            
+            if (savedUserData) {
+                userData = JSON.parse(savedUserData);
+                showMainContent();
+                initializeSystem();
+            } else {
+                // Mostrar modal de cadastro
+                document.getElementById('registrationModal').classList.remove('hidden');
+            }
+        }
+
+        // Lidar com o registro do usuário
+        function handleRegistration(e) {
+            e.preventDefault();
+            
+            const userName = document.getElementById('userName').value;
+            const trainingTime = document.getElementById('trainingTime').value;
+            const trainingDurationHours = parseInt(document.getElementById('trainingDurationHours').value) || 0;
+            const trainingDurationMinutes = parseInt(document.getElementById('trainingDurationMinutes').value) || 0;
+            const timezone = document.getElementById('timezone').value;
+            
+            // Calcular duração total em minutos
+            const trainingDurationTotalMinutes = (trainingDurationHours * 60) + trainingDurationMinutes;
+            
+            userData = {
+                userName,
+                trainingTime,
+                trainingDurationHours,
+                trainingDurationMinutes,
+                trainingDurationTotalMinutes,
+                timezone,
+                registrationDate: new Date().toISOString(),
+                currentDay: 1
+            };
+            
+            // Salvar no localStorage
+            localStorage.setItem('soloLevelingUserData', JSON.stringify(userData));
+            
+            // Fechar modal e mostrar conteúdo principal
+            document.getElementById('registrationModal').classList.add('hidden');
+            showMainContent();
+            initializeSystem();
+        }
+
+        // Mostrar conteúdo principal
+        function showMainContent() {
+            // Atualizar informações do usuário
+            document.getElementById('displayUserName').textContent = userData.userName;
+            
+            const [hours, minutes] = userData.trainingTime.split(':');
+            const startTime = new Date();
+            startTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+            
+            const endTime = new Date(startTime.getTime() + (userData.trainingDurationTotalMinutes * 60 * 1000));
+            
+            const startStr = startTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const endStr = endTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            document.getElementById('displayTrainingTime').textContent = `Treino: ${startStr} - ${endStr}`;
+            
+            // Atualizar data atual
+            updateCurrentDate();
+            
+            // Mostrar botão de resumo se já completou 30 dias
+            if (currentDay >= 30) {
+                const summaryButton = document.getElementById('summaryButton');
+                const savedHistory = JSON.parse(localStorage.getItem('soloLevelingHistory') || '[]');
+                const day30Completed = savedHistory.some(day => day.day === 30 && day.status === 'Concluído');
+                
+                if (day30Completed) {
+                    summaryButton.style.display = 'inline-block';
+                }
+            }
+        }
+
+        // Inicializar o sistema
+        function initializeSystem() {
+            // Verificar se há progresso salvo
+            const savedProgress = localStorage.getItem('soloLevelingProgress');
+            const savedHistory = localStorage.getItem('soloLevelingHistory');
+            const savedDay = localStorage.getItem('soloLevelingCurrentDay');
+            
+            if (savedProgress) {
+                currentProgress = JSON.parse(savedProgress);
+            }
+            
+            if (savedHistory) {
+                history = JSON.parse(savedHistory);
+            }
+            
+            if (savedDay) {
+                currentDay = parseInt(savedDay);
+            } else {
+                // Calcular dia atual com base na data de registro
+                const registrationDate = new Date(userData.registrationDate);
+                const today = new Date();
+                const diffTime = Math.abs(today - registrationDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                currentDay = Math.min(diffDays, 30); // Máximo de 30 dias
+                localStorage.setItem('soloLevelingCurrentDay', currentDay.toString());
+            }
+            
+            // Inicializar exercícios do dia atual
+            initializeDayExercises(currentDay);
+            
+            // Verificar e iniciar timer
+            checkTrainingWindow();
+            
+            // Atualizar data e hora a cada minuto
+            setInterval(updateCurrentDate, 60000);
+            
+            // Verificar mudança de dia a cada minuto
+            setInterval(checkDayChange, 60000);
+        }
+
+        // Inicializar exercícios do dia
+        function initializeDayExercises(day) {
+            // Calcular metas baseadas no dia
+            const pushups = 50 + ((day - 1) * 5);
+            const situps = 50 + ((day - 1) * 5);
+            const squats = 50 + ((day - 1) * 5);
+            const running = 20 + Math.floor((day - 1) / 2);
+            const plankMinutes = 2 + Math.floor((day - 1) / 3) * 0.5;
+            
+            exerciseData = {
+                pushups: { name: "Flexões", target: pushups, completed: false },
+                situps: { name: "Abdominais", target: situps, completed: false },
+                squats: { name: "Agachamentos", target: squats, completed: false },
+                running: { name: "Corrida", target: running, unit: "km", completed: false },
+                plank: { name: "Prancha", target: plankMinutes, unit: "min", completed: false }
+            };
+            
+            // Carregar progresso salvo para este dia
+            if (currentProgress[day]) {
+                exerciseData.pushups.completed = currentProgress[day].pushups || false;
+                exerciseData.situps.completed = currentProgress[day].situps || false;
+                exerciseData.squats.completed = currentProgress[day].squats || false;
+                exerciseData.running.completed = currentProgress[day].running || false;
+                exerciseData.plank.completed = currentProgress[day].plank || false;
+            }
+            
+            // Atualizar interface
+            updateDayDisplay(day);
+            renderChecklist();
+            
+            // Verificar se o dia já foi concluído
+            checkDayCompletion();
+        }
+
+        // Atualizar display do dia
+        function updateDayDisplay(day) {
+            document.getElementById('currentDay').textContent = `Dia ${day}`;
+            currentDay = day;
+            
+            // Atualizar no userData
+            if (userData) {
+                userData.currentDay = day;
+                localStorage.setItem('soloLevelingUserData', JSON.stringify(userData));
+            }
+        }
+
+        // Renderizar checklist na interface
+        function renderChecklist() {
+            const container = document.getElementById('checklistContainer');
+            container.innerHTML = '';
+            
+            // Mapear exercícios
+            const exercises = [
+                { key: 'pushups', icon: 'fas fa-hand-paper' },
+                { key: 'situps', icon: 'fas fa-bed' },
+                { key: 'squats', icon: 'fas fa-running' },
+                { key: 'running', icon: 'fas fa-road' },
+                { key: 'plank', icon: 'fas fa-clock' }
+            ];
+            
+            exercises.forEach(exercise => {
+                const data = exerciseData[exercise.key];
+                const isCompleted = data.completed;
+                const unit = data.unit ? data.unit : '';
+                
+                const checklistItem = document.createElement('div');
+                checklistItem.className = `checklist-item ${isCompleted ? 'completed' : ''}`;
+                checklistItem.innerHTML = `
+                    <input type="checkbox" class="checklist-checkbox" id="checkbox-${exercise.key}" 
+                           ${isCompleted ? 'checked' : ''} 
+                           ${!isTrainingWindowActive ? 'disabled' : ''}
+                           onchange="toggleExercise('${exercise.key}')">
+                    <div class="checklist-content">
+                        <div class="checklist-name">
+                            <i class="${exercise.icon}"></i> ${data.name}
+                        </div>
+                        <div class="checklist-target">
+                            Meta: <span>${data.target} ${unit}</span>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(checklistItem);
+            });
+        }
+
+        // Alternar estado do exercício
+        function toggleExercise(exerciseKey) {
+            if (!isTrainingWindowActive) return;
+            
+            const checkbox = document.getElementById(`checkbox-${exerciseKey}`);
+            exerciseData[exerciseKey].completed = checkbox.checked;
+            
+            // Salvar progresso
+            saveProgress();
+            
+            // Atualizar visual
+            const checklistItem = checkbox.closest('.checklist-item');
+            if (checkbox.checked) {
+                checklistItem.classList.add('completed');
+            } else {
+                checklistItem.classList.remove('completed');
+            }
+            
+            // Verificar conclusão do dia
+            checkDayCompletion();
+        }
+
+        // Salvar progresso no localStorage
+        function saveProgress() {
+            if (!currentProgress[currentDay]) {
+                currentProgress[currentDay] = {};
+            }
+            
+            currentProgress[currentDay].pushups = exerciseData.pushups.completed;
+            currentProgress[currentDay].situps = exerciseData.situps.completed;
+            currentProgress[currentDay].squats = exerciseData.squats.completed;
+            currentProgress[currentDay].running = exerciseData.running.completed;
+            currentProgress[currentDay].plank = exerciseData.plank.completed;
+            currentProgress[currentDay].date = new Date().toISOString();
+            currentProgress[currentDay].completed = isDayCompleted();
+            
+            localStorage.setItem('soloLevelingProgress', JSON.stringify(currentProgress));
+        }
+
+        // Verificar se o dia foi concluído
+        function isDayCompleted() {
+            return exerciseData.pushups.completed &&
+                   exerciseData.situps.completed &&
+                   exerciseData.squats.completed &&
+                   exerciseData.running.completed &&
+                   exerciseData.plank.completed;
+        }
+
+        // Verificar conclusão do dia e mostrar mensagem
+        function checkDayCompletion() {
+            const messageContainer = document.getElementById('messageContainer');
+            
+            if (isDayCompleted()) {
+                // Dia concluído com sucesso
+                messageContainer.innerHTML = `
+                    <div class="message-success">
+                        <h2 class="message-title"><i class="fas fa-trophy"></i> QUEST COMPLETA</h2>
+                        <p class="message-text">VOCÊ SOBREVIVEU AO DIA. Sua determinação impressiona até mesmo os caçadores de ranking mais alto.</p>
+                        <p class="message-text" style="margin-top: 15px;">Recompensa: +1 nível de força</p>
+                    </div>
+                `;
+                messageContainer.classList.remove('hidden', 'message-fail');
+                messageContainer.classList.add('message-success');
+                
+                // Desabilitar checkboxes
+                document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+                    checkbox.disabled = true;
+                });
+                
+                // Registrar no histórico se ainda não foi registrado
+                addToHistory('completed');
+                
+                // Se for o dia 30, mostrar botão de resumo
+                if (currentDay === 30) {
+                    document.getElementById('summaryButton').style.display = 'inline-block';
+                }
+                
+            } else {
+                // Esconder mensagem se não estiver completo
+                messageContainer.classList.add('hidden');
+            }
+        }
+
+        // Verificar janela de treino
+        function checkTrainingWindow() {
+            if (!userData) return;
+            
+            const now = new Date();
+            const [startHour, startMinute] = userData.trainingTime.split(':').map(Number);
+            
+            const startTime = new Date();
+            startTime.setHours(startHour, startMinute, 0, 0);
+            
+            const endTime = new Date(startTime.getTime() + (userData.trainingDurationTotalMinutes * 60 * 1000));
+            
+            // Verificar se estamos na janela de treino
+            isTrainingWindowActive = now >= startTime && now <= endTime;
+            
+            // Atualizar timer
+            updateTimer(now, startTime, endTime);
+            
+            // Atualizar estado dos checkboxes
+            document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+                checkbox.disabled = !isTrainingWindowActive;
+            });
+            
+            // Iniciar/parar intervalo do timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            timerInterval = setInterval(() => {
+                const now = new Date();
+                updateTimer(now, startTime, endTime);
+                
+                // Verificar se a janela de treino mudou
+                const wasActive = isTrainingWindowActive;
+                isTrainingWindowActive = now >= startTime && now <= endTime;
+                
+                if (wasActive !== isTrainingWindowActive) {
+                    // Janela de treino mudou, atualizar checkboxes
+                    document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+                        checkbox.disabled = !isTrainingWindowActive;
+                    });
+                    
+                    if (!isTrainingWindowActive && wasActive) {
+                        // Treino acabou, verificar se foi concluído
+                        if (!isDayCompleted()) {
+                            showFailureMessage();
+                            addToHistory('failed');
+                        }
+                    }
+                }
+            }, 1000);
+        }
+
+        // Atualizar timer
+        function updateTimer(now, startTime, endTime) {
+            const timerElement = document.getElementById('timer');
+            const statusElement = document.getElementById('timerStatus');
+            
+            if (now < startTime) {
+                // Antes do treino
+                const timeUntilStart = startTime - now;
+                const hours = Math.floor(timeUntilStart / (1000 * 60 * 60));
+                const minutes = Math.floor((timeUntilStart % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeUntilStart % (1000 * 60)) / 1000);
+                
+                timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                timerElement.className = 'timer';
+                statusElement.textContent = 'Treino começa em:';
+                
+            } else if (now >= startTime && now <= endTime) {
+                // Durante o treino
+                const timeRemaining = endTime - now;
+                const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                
+                timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Mudar cor conforme o tempo vai acabando
+                if (timeRemaining < 5 * 60 * 1000) { // Menos de 5 minutos
+                    timerElement.className = 'timer timer-danger';
+                } else if (timeRemaining < 15 * 60 * 1000) { // Menos de 15 minutos
+                    timerElement.className = 'timer timer-warning';
+                } else {
+                    timerElement.className = 'timer timer-active';
+                }
+                
+                statusElement.textContent = 'Tempo restante para completar a quest de hoje:';
+                
+            } else {
+                // Depois do treino
+                timerElement.textContent = '00:00:00';
+                timerElement.className = 'timer';
+                statusElement.textContent = 'Treino encerrado. Tente novamente amanhã.';
+            }
+        }
+
+        // Mostrar mensagem de falha
+        function showFailureMessage() {
+            const messageContainer = document.getElementById('messageContainer');
+            
+            messageContainer.innerHTML = `
+                <div class="message-fail">
+                    <h2 class="message-title"><i class="fas fa-skull-crossbones"></i> VOCÊ FALHOU</h2>
+                    <p class="message-text">TEMPO ESGOTADO. TENTE NOVAMENTE AMANHÃ.</p>
+                    <p class="message-text" style="margin-top: 15px; color: var(--accent-red); font-weight: bold;">
+                        AVISO — A FALHA NO CUMPRIMENTO DESSA QUEST RESULTA EM PENALIDADE.
+                    </p>
+                </div>
+            `;
+            
+            messageContainer.classList.remove('hidden', 'message-success');
+            messageContainer.classList.add('message-fail');
+        }
+
+        // Adicionar ao histórico
+        function addToHistory(status) {
+            // Verificar se este dia já está no histórico
+            const existingIndex = history.findIndex(item => item.day === currentDay);
+            
+            const historyEntry = {
+                day: currentDay,
+                status: status === 'completed' ? 'Concluído' : 'Falhou',
+                date: new Date().toLocaleDateString('pt-BR'),
+                trainingTime: userData.trainingTime,
+                trainingDuration: `${userData.trainingDurationHours}h${userData.trainingDurationMinutes > 0 ? userData.trainingDurationMinutes + 'min' : ''}`,
+                exercises: {
+                    pushups: exerciseData.pushups.completed,
+                    situps: exerciseData.situps.completed,
+                    squats: exerciseData.squats.completed,
+                    running: exerciseData.running.completed,
+                    plank: exerciseData.plank.completed
+                }
+            };
+            
+            if (existingIndex >= 0) {
+                history[existingIndex] = historyEntry;
+            } else {
+                history.push(historyEntry);
+            }
+            
+            // Salvar histórico
+            localStorage.setItem('soloLevelingHistory', JSON.stringify(history));
+        }
+
+        // Mostrar histórico
+        function showHistory() {
+            showingHistory = true;
+            showingSummary = false;
+            
+            document.getElementById('questContainer').classList.add('hidden');
+            document.getElementById('historySection').classList.remove('hidden');
+            document.getElementById('summarySection').classList.add('hidden');
+            
+            renderHistory();
+        }
+
+        // Mostrar resumo final
+        function showSummary() {
+            // Só mostrar se já completou o dia 30
+            const savedHistory = JSON.parse(localStorage.getItem('soloLevelingHistory') || '[]');
+            const day30Completed = savedHistory.some(day => day.day === 30 && day.status === 'Concluído');
+            
+            if (!day30Completed) {
+                alert('O resumo final só estará disponível após completar o Dia 30!');
+                return;
+            }
+            
+            showingHistory = false;
+            showingSummary = true;
+            
+            document.getElementById('questContainer').classList.add('hidden');
+            document.getElementById('historySection').classList.add('hidden');
+            document.getElementById('summarySection').classList.remove('hidden');
+            
+            renderSummary();
+        }
+
+        // Voltar para o dia atual
+        function showCurrentDay() {
+            showingHistory = false;
+            showingSummary = false;
+            
+            document.getElementById('questContainer').classList.remove('hidden');
+            document.getElementById('historySection').classList.add('hidden');
+            document.getElementById('summarySection').classList.add('hidden');
+            
+            // Renderizar o checklist atual
+            renderChecklist();
+        }
+
+        // Renderizar histórico
+        function renderHistory() {
+            const daysGrid = document.getElementById('daysGrid');
+            daysGrid.innerHTML = '';
+            
+            // Para cada dia de 1 a 30
+            for (let day = 1; day <= 30; day++) {
+                const dayData = currentProgress[day] || {};
+                const historyEntry = history.find(h => h.day === day);
+                
+                let status = 'pending';
+                let statusText = 'Pendente';
+                let date = '--/--/----';
+                
+                if (historyEntry) {
+                    status = historyEntry.status === 'Concluído' ? 'completed' : 'failed';
+                    statusText = historyEntry.status;
+                    date = historyEntry.date;
+                } else if (dayData.completed) {
+                    status = 'completed';
+                    statusText = 'Concluído';
+                    date = dayData.date ? new Date(dayData.date).toLocaleDateString('pt-BR') : '--/--/----';
+                } else if (day < currentDay) {
+                    status = 'failed';
+                    statusText = 'Falhou';
+                }
+                
+                const dayCard = document.createElement('div');
+                dayCard.className = `day-card ${status}`;
+                dayCard.onclick = () => showDayDetails(day);
+                
+                // Adicionar classe "locked" para dias futuros
+                if (day > currentDay) {
+                    dayCard.classList.add('locked');
+                }
+                
+                dayCard.innerHTML = `
+                    <div class="day-number">Dia ${day}</div>
+                    <div class="day-status ${status}">${statusText}</div>
+                    <div class="day-date">${date}</div>
+                `;
+                
+                daysGrid.appendChild(dayCard);
+            }
+        }
+
+        // Mostrar detalhes do dia
+        function showDayDetails(day) {
+            // Não mostrar detalhes de dias futuros
+            if (day > currentDay) {
+                alert('Este dia ainda não está disponível!');
+                return;
+            }
+            
+            selectedDay = day;
+            const dayDetails = document.getElementById('dayDetails');
+            const dayData = currentProgress[day] || {};
+            const historyEntry = history.find(h => h.day === day);
+            
+            // Calcular metas do dia
+            const pushupsTarget = 50 + ((day - 1) * 5);
+            const situpsTarget = 50 + ((day - 1) * 5);
+            const squatsTarget = 50 + ((day - 1) * 5);
+            const runningTarget = 20 + Math.floor((day - 1) / 2);
+            const plankTarget = 2 + Math.floor((day - 1) / 3) * 0.5;
+            
+            let detailsHTML = `
+                <h3>Detalhes do Dia ${day}</h3>
+                <div class="day-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value">${historyEntry ? historyEntry.status : (dayData.completed ? 'Concluído' : (day < currentDay ? 'Falhou' : 'Em andamento'))}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Data</div>
+                        <div class="stat-value">${historyEntry ? historyEntry.date : (dayData.date ? new Date(dayData.date).toLocaleDateString('pt-BR') : '--/--/----')}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Tempo Disponível</div>
+                        <div class="stat-value">${userData.trainingTime} - ${calculateEndTime(userData.trainingTime, userData.trainingDurationTotalMinutes)}</div>
+                    </div>
+                </div>
+                <h4 style="margin-top: 20px; color: var(--accent-green);">Exercícios Concluídos:</h4>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+            `;
+            
+            const exercises = [
+                { name: 'Flexões', completed: dayData.pushups, target: pushupsTarget },
+                { name: 'Abdominais', completed: dayData.situps, target: situpsTarget },
+                { name: 'Agachamentos', completed: dayData.squats, target: squatsTarget },
+                { name: 'Corrida', completed: dayData.running, target: runningTarget, unit: 'km' },
+                { name: 'Prancha', completed: dayData.plank, target: plankTarget, unit: 'min' }
+            ];
+            
+            exercises.forEach(ex => {
+                const completed = ex.completed ? '✅' : '❌';
+                const unit = ex.unit ? ` ${ex.unit}` : '';
+                detailsHTML += `<li>${completed} ${ex.name} - Meta: ${ex.target}${unit}</li>`;
+            });
+            
+            detailsHTML += `</ul>`;
+            
+            dayDetails.innerHTML = detailsHTML;
+            dayDetails.classList.remove('hidden');
+        }
+
+        // Alternar visibilidade dos detalhes
+        function toggleDayDetails() {
+            const dayDetails = document.getElementById('dayDetails');
+            const toggleBtn = document.getElementById('toggleDetailsBtn');
+            
+            if (dayDetails.classList.contains('hidden')) {
+                if (selectedDay) {
+                    dayDetails.classList.remove('hidden');
+                    toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Ocultar Detalhes';
+                } else {
+                    alert('Selecione um dia para ver os detalhes!');
+                }
+            } else {
+                dayDetails.classList.add('hidden');
+                toggleBtn.innerHTML = '<i class="fas fa-info-circle"></i> Mostrar Detalhes';
+            }
+        }
+
+        // Renderizar resumo final
+        function renderSummary() {
+            const summaryStats = document.getElementById('summaryStats');
+            
+            // Calcular estatísticas
+            let totalCompleted = 0;
+            let totalFailed = 0;
+            let totalExercises = 0;
+            let totalTrainingMinutes = 0;
+            
+            for (let day = 1; day <= 30; day++) {
+                const dayData = currentProgress[day] || {};
+                const historyEntry = history.find(h => h.day === day);
+                
+                if (historyEntry) {
+                    if (historyEntry.status === 'Concluído') {
+                        totalCompleted++;
+                    } else {
+                        totalFailed++;
+                    }
+                } else if (dayData.completed) {
+                    totalCompleted++;
+                } else if (day < currentDay) {
+                    totalFailed++;
+                }
+                
+                // Contar exercícios concluídos
+                if (dayData.pushups) totalExercises++;
+                if (dayData.situps) totalExercises++;
+                if (dayData.squats) totalExercises++;
+                if (dayData.running) totalExercises++;
+                if (dayData.plank) totalExercises++;
+            }
+            
+            // Tempo total de treino
+            totalTrainingMinutes = totalCompleted * userData.trainingDurationTotalMinutes;
+            const averageTrainingPerDay = totalTrainingMinutes / 30;
+            const completionRate = (totalCompleted / 30) * 100;
+            
+            summaryStats.innerHTML = `
+                <div class="summary-stat">
+                    <div class="label">Dias Concluídos</div>
+                    <div class="value">${totalCompleted}</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="label">Dias Falhados</div>
+                    <div class="value">${totalFailed}</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="label">Exercícios Realizados</div>
+                    <div class="value">${totalExercises}</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="label">Tempo Total de Treino</div>
+                    <div class="value">${Math.floor(totalTrainingMinutes / 60)}h ${totalTrainingMinutes % 60}min</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="label">Média Diária de Treino</div>
+                    <div class="value">${Math.floor(averageTrainingPerDay / 60)}h ${Math.floor(averageTrainingPerDay % 60)}min</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="label">Aproveitamento</div>
+                    <div class="value">${completionRate.toFixed(1)}%</div>
+                </div>
+            `;
+        }
+
+        // Calcular horário final
+        function calculateEndTime(startTime, durationMinutes) {
+            const [hours, minutes] = startTime.split(':').map(Number);
+            const startDate = new Date();
+            startDate.setHours(hours, minutes, 0, 0);
+            
+            const endDate = new Date(startDate.getTime() + (durationMinutes * 60 * 1000));
+            return endDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        // Verificar mudança de dia
+        function checkDayChange() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            
+            // Se for meia-noite, avançar para o próximo dia
+            if (currentHour === 0 && currentMinute === 0) {
+                if (currentDay < 30) {
+                    currentDay++;
+                    localStorage.setItem('soloLevelingCurrentDay', currentDay.toString());
+                    
+                    // Reiniciar progresso para o novo dia
+                    initializeDayExercises(currentDay);
+                    
+                    // Mostrar notificação (simulada)
+                    alert('Nova quest diária disponível! Dia ' + currentDay);
+                    
+                    // Se estiver no histórico, atualizar
+                    if (showingHistory) {
+                        renderHistory();
+                    }
+                } else {
+                    // Ciclo de 30 dias completo
+                    alert('Parabéns! Você completou o ciclo de 30 dias de treinamento!');
+                }
+            }
+        }
+
+        // Atualizar data atual
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateStr = now.toLocaleDateString('pt-BR', options);
+            
+            document.getElementById('currentDate').textContent = `Data: ${dateStr}`;
+        }
+
+        // Reiniciar sistema
+        function resetSystem() {
+            if (confirm('Tem certeza que deseja reiniciar o sistema? Todo o seu progresso será perdido.')) {
+                localStorage.removeItem('soloLevelingUserData');
+                localStorage.removeItem('soloLevelingProgress');
+                localStorage.removeItem('soloLevelingHistory');
+                localStorage.removeItem('soloLevelingCurrentDay');
+                
+                // Recarregar a página
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
